@@ -1,3 +1,5 @@
+// http://forum.libcinder.org/topic/simple-hand-tracking-with-kinect-opencv
+
 #include "cinder/app/AppBasic.h"
 #include "cinder/gl/gl.h"
 #include "cinder/gl/Texture.h"
