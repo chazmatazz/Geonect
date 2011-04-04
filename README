@@ -1,4 +1,5 @@
 Geonect
+_______
 
 3D modeling with Kinect.
 
@@ -11,3 +12,48 @@ Project Members:
 Charles Dietrich
 Ben Link
 Michelle Bourgeois
+
+Details
+-------
+
+Uses OpenNI to provide high-level interpretation of the Kinect data. Uses Cinder.
+
+Installation on OS X with Xcode 4
+---------------------------------
+
+First, get libusb and the kinect patch at http://openkinect.org/wiki/Getting_Started#Manual_Build_under_OSX. Patch libusb.
+
+From http://discussions.info.apple.com/thread.jspa?threadID=2614064&amp;tstart=0, do the following:
+
+env CFLAGS="-arch i386" ./configure; make
+mv libusb/.libs/libusb-1.0.0.dylib /tmp/libusb-1.0.0.dylib.i386
+make clean
+nv CFLAGS="-arch x86_64" ./configure; make
+mv libusb/.libs/libusb-1.0.0.dylib /tmp/libusb-1.0.0.dylib.x86_64
+lipo -create /tmp/libusb-1.0.0.dylib.i386 /tmp/libusb-1.0.0.dylib.x86_64 -output libusb/.libs/libusb-1.0.0.dylib
+sudo make install
+
+Install all the stuff on the OpenNI page. Just grab binaries.
+
+Change to your blocks directory
+
+git clone https://github.com/pixelnerve/BlockOpenNI.git
+
+Go to https://github.com/avin2/SensorKinect. Download the binary file for OS X. Install.
+
+Now create your new project with TinderBox. Modify the following:
+  * Add "$(CINDER_PATH)/blocks/BlockOpenNI/include/OpenNI" to your Header Search Paths
+  * Add "$(CINDER_PATH)/blocks/BlockOpenNI/include" to your User Header Search Paths
+  * Add the files in the blocks/BlockOpenNI/src folder to your sources.
+  * Add "$(CINDER_PATH)/blocks/BlockOpenNI/lib/macosx/libOpenNI.dylib" to your Other Linker Flags under Debug and Release.
+
+You can now compile. However, you will get an xml error.
+
+This is a hack: You need to copy BlockOpenNI/samples/BlockOpenNISample/data  to ~/Library/Developer/Xcode/Geonect-<some-id>/Build/Products/Debug/. This should be done with a resource.
+
+Now you should be good to go. If you get No PS sensor is connected! error, try running another Kinect program, and then running again.
+
+Installation on Windows
+-----------------------
+
+This should be easy, but has not been done yet.

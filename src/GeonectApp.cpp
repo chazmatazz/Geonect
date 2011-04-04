@@ -1,166 +1,196 @@
-// http://forum.libcinder.org/topic/simple-hand-tracking-with-kinect-opencv
-
 #include "cinder/app/AppBasic.h"
+#include "cinder/imageio.h"
 #include "cinder/gl/gl.h"
 #include "cinder/gl/Texture.h"
-#include "cinder/params/Params.h"
-
-#include "Kinect.h"
-#include "CinderOpenCv.h"
+#include "VOpenNIHeaders.h"
 
 using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-class HandTrackingApp : public AppBasic {
+
+class ImageSourceKinectColor : public ImageSource 
+{
 public:
-    void prepareSettings( Settings* settings );
-    void setup();
-    void update();
-    void draw();
+	ImageSourceKinectColor( uint8_t *buffer, int width, int height )
+    : ImageSource(), mData( buffer ), _width(width), _height(height)
+	{
+		setSize( _width, _height );
+		setColorModel( ImageIo::CM_RGB );
+		setChannelOrder( ImageIo::RGB );
+		setDataType( ImageIo::UINT8 );
+	}
     
-    params::InterfaceGl mParams;
+	~ImageSourceKinectColor()
+	{
+		// mData is actually a ref. It's released from the device. 
+		/*if( mData ) {
+         delete[] mData;
+         mData = NULL;
+         }*/
+	}
     
-    float mThreshold, mBlobMin, mBlobMax;
-    float mKinectTilt;
+	virtual void load( ImageTargetRef target )
+	{
+		ImageSource::RowFunc func = setupRowFunc( target );
+        
+		for( uint32_t row	 = 0; row < _height; ++row )
+			((*this).*func)( target, row, mData + row * _width * 3 );
+	}
     
-    Kinect mKinect;
-    gl::Texture mColorTexture, mDepthTexture, mCvTexture; 
-    Surface mDepthSurface;
-    
-    Vec3f mTargetPosition;
+protected:
+	uint32_t					_width, _height;
+	uint8_t						*mData;
 };
 
-void HandTrackingApp::prepareSettings( Settings* settings )
+
+class ImageSourceKinectDepth : public ImageSource 
 {
-    settings->setWindowSize( 640, 720 );
-}
-
-
-void HandTrackingApp::setup()
-{
+public:
+	ImageSourceKinectDepth( uint16_t *buffer, int width, int height )
+    : ImageSource(), mData( buffer ), _width(width), _height(height)
+	{
+		setSize( _width, _height );
+		setColorModel( ImageIo::CM_GRAY );
+		setChannelOrder( ImageIo::Y );
+		setDataType( ImageIo::UINT16 );
+	}
     
-    mThreshold = 70.0f;
-    mBlobMin = 20.0f;
-    mBlobMax = 80.0f;
+	~ImageSourceKinectDepth()
+	{
+		// mData is actually a ref. It's released from the device. 
+		/*if( mData ) {
+         delete[] mData;
+         mData = NULL;
+         }*/
+	}
     
-    mParams = params::InterfaceGl( "Hand Tracking", Vec2i( 10, 10 ) );
-    mParams.addParam( "Threshold", &mThreshold, "min=0.0 max=255.0 step=1.0 keyIncr=s keyDecr=w" );
-    mParams.addParam( "Blob Minimum Radius", &mBlobMin, "min=1.0 max=200.0 step=1.0 keyIncr=e keyDecr=d" );
-    mParams.addParam( "Blob Maximum Radius", &mBlobMax, "min=1.0 max=200.0 step=1.0 keyIncr=r keyDecr=f" );
-    mParams.addParam( "Kinect Tilt", &mKinectTilt, "min=-31 max=31 keyIncr=T keyDecr=t" );
-    
-    mKinect = Kinect( Kinect::Device() );
-    
-    mTargetPosition = Vec3f::zero();
-    
-}
-
-
-void HandTrackingApp::update()
-{
-    if( mKinect.checkNewDepthFrame() ){
+	virtual void load( ImageTargetRef target )
+	{
+		ImageSource::RowFunc func = setupRowFunc( target );
         
-        ImageSourceRef depthImage = mKinect.getDepthImage();
-        
-        // make a texture to display
-        mDepthTexture = depthImage;
-        // make a surface for opencv
-        mDepthSurface = depthImage;
-        
-        if(mDepthSurface){
-            
-            // once the surface is avalable pass it to opencv
-            // had trouble here with bit depth. surface comes in full color, needed to crush it down
-            cv::Mat input( toOcv( Channel8u( mDepthSurface )  ) ), blurred, thresholded, thresholded2, output;
-            
-            cv::blur(input, blurred, cv::Size(10,10));
-            
-            // make two thresholded images one to display and one
-            // to pass to find contours since its process alters the image
-            cv::threshold( blurred, thresholded, mThreshold, 255, CV_THRESH_BINARY);
-            cv::threshold( blurred, thresholded2, mThreshold, 255, CV_THRESH_BINARY);
-            
-            // 2d vector to store the found contours
-            vector<vector<cv::Point> > contours;
-            // find em
-            cv::findContours(thresholded, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
-            
-            // convert theshold image to color for output
-            // so we can draw blobs on it
-            cv::cvtColor( thresholded2, output, CV_GRAY2RGB );
-            
-            // loop the stored contours
-            for (vector<vector<cv::Point> >::iterator it=contours.begin() ; it < contours.end(); it++ ){
-                
-                // center abd radius for current blob
-                cv::Point2f center;
-                float radius;
-                // convert the cuntour point to a matrix 
-                vector<cv::Point> pts = *it;
-                cv::Mat pointsMatrix = cv::Mat(pts);
-                // pass to min enclosing circle to make the blob 
-                cv::minEnclosingCircle(pointsMatrix, center, radius);
-                
-                cv::Scalar color( 0, 255, 0 );
-                
-                if (radius > mBlobMin && radius < mBlobMax) {
-                    // draw the blob if it's in range
-                    cv::circle(output, center, radius, color);
-                    
-                    //update the target position
-                    mTargetPosition.x = 640 - center.x;
-                    mTargetPosition.y = center.y;
-                    mTargetPosition.z = 0;
-                }
-                
-                
-            }
-            
-            mCvTexture = gl::Texture( fromOcv( output ) );
-        }
-    }
+		for( uint32_t row = 0; row < _height; ++row )
+			((*this).*func)( target, row, mData + row * _width );
+	}
     
-    if( mKinect.checkNewVideoFrame() )
-        mColorTexture = mKinect.getVideoImage();
-    
-    if( mKinectTilt != mKinect.getTilt() )
-        mKinect.setTilt( mKinectTilt );
-    
-}
+protected:
+	uint32_t					_width, _height;
+	uint16_t					*mData;
+};
 
-void HandTrackingApp::draw()
+
+class BlockOpenNISampleAppApp : public AppBasic 
 {
+public:
+	static const int WIDTH = 1280;
+	static const int HEIGHT = 720;
     
-    gl::clear( Color( 0.5f, 0.5f, 0.5f ) );
+	static const int KINECT_COLOR_WIDTH = 640;	//1280;
+	static const int KINECT_COLOR_HEIGHT = 480;	//1024;
+	static const int KINECT_COLOR_FPS = 30;	//15;
+	static const int KINECT_DEPTH_WIDTH = 640;
+	static const int KINECT_DEPTH_HEIGHT = 480;
+	static const int KINECT_DEPTH_FPS = 30;
     
     
-    gl::disableDepthWrite();
-    gl::disableDepthRead();
+	void setup();
+	void mouseDown( MouseEvent event );	
+	void update();
+	void draw();
+	void keyDown( KeyEvent event );
     
-    glPushMatrix();
-    gl::scale(Vec3f(-1, 1, 1));
-    if( mColorTexture )
-        gl::draw( mColorTexture, Vec2i( -640, 0));
-    glPopMatrix();
+	ImageSourceRef getColorImage()
+	{
+		// register a reference to the active buffer
+		uint8_t *activeColor = _device0->getColorMap();
+		return ImageSourceRef( new ImageSourceKinectColor( activeColor, KINECT_COLOR_WIDTH, KINECT_COLOR_HEIGHT ) );
+	}
     
-    glPushMatrix();
-    gl::scale(Vec3f(-0.5, 0.5, 1));
-    if( mDepthTexture )
-        gl::draw( mDepthTexture,Vec2i( -640, 920 ));
-    if ( mCvTexture )
-        gl::draw( mCvTexture,Vec2i( -1280, 920 ));
-    glPopMatrix();
+	ImageSourceRef getUserColorImage( int id )
+	{
+		// register a reference to the active buffer
+		uint8_t *activeColor = _manager->getUser(id)->getPixels();
+		return ImageSourceRef( new ImageSourceKinectColor( activeColor, KINECT_COLOR_WIDTH, KINECT_COLOR_HEIGHT ) );
+	}
     
-    gl::enableDepthWrite();
-    gl::enableDepthRead();
+	ImageSourceRef getDepthImage()
+	{
+		// register a reference to the active buffer
+		uint16_t *activeDepth = _device0->getDepthMap();
+		return ImageSourceRef( new ImageSourceKinectDepth( activeDepth, KINECT_DEPTH_WIDTH, KINECT_DEPTH_HEIGHT ) );
+	} 
     
-    gl::color(Colorf(1.0f, 0.0f, 0.0f));
-    gl::drawSphere(mTargetPosition, 10.0f);
+	ImageSourceRef getDepthImage24()
+	{
+		// register a reference to the active buffer
+		uint8_t *activeDepth = _device0->getDepthMap24();
+		return ImageSourceRef( new ImageSourceKinectColor( activeDepth, KINECT_DEPTH_WIDTH, KINECT_DEPTH_HEIGHT ) );
+	}
     
-    params::InterfaceGl::draw();
+public:	// Members
+	V::OpenNIDeviceManager*	_manager;
+	V::OpenNIDevice::Ref	_device0;
     
+	gl::Texture				mColorTex;
+	gl::Texture				mDepthTex;
+    
+};
+
+void BlockOpenNISampleAppApp::setup()
+{
+	_manager = V::OpenNIDeviceManager::InstancePtr();
+	_device0 = _manager->createDevice( "data/configIR.xml" );
+	//_device0 = _manager->createDevice( V::NODE_TYPE_IR | V::NODE_TYPE_DEPTH );	// Create manually.
+	if( !_device0 ) 
+	{
+		DEBUG_MESSAGE( "(App)  Couldn't init device0\n" );
+		exit( 0 );
+	}
+	_device0->setPrimaryBuffer( V::NODE_TYPE_DEPTH );
+	_manager->start();
+    
+    
+	gl::Texture::Format format;
+	gl::Texture::Format depthFormat;
+	mColorTex = gl::Texture( KINECT_COLOR_WIDTH, KINECT_COLOR_HEIGHT, format );
+	mDepthTex = gl::Texture( KINECT_DEPTH_WIDTH, KINECT_DEPTH_HEIGHT, format );
 }
 
+void BlockOpenNISampleAppApp::mouseDown( MouseEvent event )
+{
+}
 
-CINDER_APP_BASIC( HandTrackingApp, RendererGl )
+void BlockOpenNISampleAppApp::update()
+{	
+	// Update textures
+	mColorTex.update( getColorImage() );
+	mDepthTex.update( getDepthImage24() );	// Histogram
+	//mDepthTex.update( getDepthImage() );	// Raw depthmap
+}
+
+void BlockOpenNISampleAppApp::draw()
+{
+	// clear out the window with black
+	gl::clear( Color( 0, 0, 0 ) ); 
+    
+    
+	float sx = 320;
+	float sy = 240;
+	float xoff = 10;
+	float yoff = 10;
+	glEnable( GL_TEXTURE_2D );
+	gl::color( cinder::ColorA(1, 1, 1, 1) );
+	gl::draw( mDepthTex, Rectf( xoff, yoff, xoff+sx, yoff+sy) );
+	gl::draw( mColorTex, Rectf( xoff+sx*1, yoff, xoff+sx*2, yoff+sy) );
+}
+
+void BlockOpenNISampleAppApp::keyDown( KeyEvent event )
+{
+	if( event.getCode() == KeyEvent::KEY_ESCAPE )
+	{
+		this->quit();
+		this->shutdown();
+	}
+}
+
+CINDER_APP_BASIC( BlockOpenNISampleAppApp, RendererGl )

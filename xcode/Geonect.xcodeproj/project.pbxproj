@@ -15,8 +15,10 @@
 		00B784B60FF439BC000DE1D7 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B784B20FF439BC000DE1D7 /* CoreAudio.framework */; };
 		00BAE65A0E7ED9C10018A608 /* GeonectApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00BAE6590E7ED9C10018A608 /* GeonectApp.cpp */; };
 		00CCAF15116A9FEE008396D5 /* CinderApp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 00CCAF14116A9FEE008396D5 /* CinderApp.icns */; };
-		4755B9331349591C00EF8798 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4755B9321349591C00EF8798 /* IOKit.framework */; };
-		4755B93513495ABB00EF8798 /* Kinect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4755B93413495ABB00EF8798 /* Kinect.cpp */; };
+		472085A5134A87B400707B3B /* OpenNIRecorder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 472085A1134A87B400707B3B /* OpenNIRecorder.cpp */; };
+		472085A6134A87B400707B3B /* VOpenNIDevice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 472085A2134A87B400707B3B /* VOpenNIDevice.cpp */; };
+		472085A7134A87B400707B3B /* VOpenNIDeviceManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 472085A3134A87B400707B3B /* VOpenNIDeviceManager.cpp */; };
+		472085A8134A87B400707B3B /* VOpenNIUser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 472085A4134A87B400707B3B /* VOpenNIUser.cpp */; };
 		5323E6B20EAFCA74003A9687 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5323E6B10EAFCA74003A9687 /* CoreVideo.framework */; };
 		5323E6B60EAFCA7E003A9687 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5323E6B50EAFCA7E003A9687 /* QTKit.framework */; };
 		53E3CDFC0E86099300238D2B /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53E3CDFB0E86099300238D2B /* Carbon.framework */; };
@@ -37,8 +39,10 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* Geonect_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Geonect_Prefix.pch; sourceTree = "<group>"; };
-		4755B9321349591C00EF8798 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
-		4755B93413495ABB00EF8798 /* Kinect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Kinect.cpp; path = "../../Cinder/blocks/Cinder-Kinect/src/Kinect.cpp"; sourceTree = "<group>"; };
+		472085A1134A87B400707B3B /* OpenNIRecorder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OpenNIRecorder.cpp; path = ../../Cinder/blocks/BlockOpenNI/src/OpenNIRecorder.cpp; sourceTree = "<group>"; };
+		472085A2134A87B400707B3B /* VOpenNIDevice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VOpenNIDevice.cpp; path = ../../Cinder/blocks/BlockOpenNI/src/VOpenNIDevice.cpp; sourceTree = "<group>"; };
+		472085A3134A87B400707B3B /* VOpenNIDeviceManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VOpenNIDeviceManager.cpp; path = ../../Cinder/blocks/BlockOpenNI/src/VOpenNIDeviceManager.cpp; sourceTree = "<group>"; };
+		472085A4134A87B400707B3B /* VOpenNIUser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VOpenNIUser.cpp; path = ../../Cinder/blocks/BlockOpenNI/src/VOpenNIUser.cpp; sourceTree = "<group>"; };
 		5323E6B10EAFCA74003A9687 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = /System/Library/Frameworks/CoreVideo.framework; sourceTree = "<absolute>"; };
 		5323E6B50EAFCA7E003A9687 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		53E3CDFB0E86099300238D2B /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
@@ -51,7 +55,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4755B9331349591C00EF8798 /* IOKit.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				0091D8F90E81B9330029341E /* OpenGL.framework in Frameworks */,
 				53E3CDFC0E86099300238D2B /* Carbon.framework in Frameworks */,
@@ -71,7 +74,10 @@
 		080E96DDFE201D6D7F000001 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				4755B93413495ABB00EF8798 /* Kinect.cpp */,
+				472085A1134A87B400707B3B /* OpenNIRecorder.cpp */,
+				472085A2134A87B400707B3B /* VOpenNIDevice.cpp */,
+				472085A3134A87B400707B3B /* VOpenNIDeviceManager.cpp */,
+				472085A4134A87B400707B3B /* VOpenNIUser.cpp */,
 				00BAE6590E7ED9C10018A608 /* GeonectApp.cpp */,
 			);
 			name = Source;
@@ -115,7 +121,6 @@
 		29B97314FDCFA39411CA2CEA /* Geonect */ = {
 			isa = PBXGroup;
 			children = (
-				4755B9321349591C00EF8798 /* IOKit.framework */,
 				29B97315FDCFA39411CA2CEA /* Headers */,
 				080E96DDFE201D6D7F000001 /* Source */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -210,7 +215,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				00BAE65A0E7ED9C10018A608 /* GeonectApp.cpp in Sources */,
-				4755B93513495ABB00EF8798 /* Kinect.cpp in Sources */,
+				472085A5134A87B400707B3B /* OpenNIRecorder.cpp in Sources */,
+				472085A6134A87B400707B3B /* VOpenNIDevice.cpp in Sources */,
+				472085A7134A87B400707B3B /* VOpenNIDeviceManager.cpp in Sources */,
+				472085A8134A87B400707B3B /* VOpenNIUser.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -229,17 +237,18 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Geonect_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					"\"$(CINDER_PATH)/boost\"",
+					"\"$(CINDER_PATH)/blocks/BlockOpenNI/include/OpenNI\"",
+				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = (
 					"\"$(CINDER_PATH)/lib/libcinder_d.a\"",
-					"\"$(CINDER_PATH)/blocks/opencv/lib/macosx/libcv.a\"",
-					"\"$(CINDER_PATH)/blocks/opencv/lib/macosx/libcxcore.a\"",
-					"\"$(CINDER_PATH)/blocks/Cinder-Kinect/lib/macosx/libfreenect.a\"",
-					"\"$(CINDER_PATH)/blocks/Cinder-Kinect/lib/macosx/libusb-1.0.a\"",
+					"\"$(CINDER_PATH)/blocks/BlockOpenNI/lib/macosx/libOpenNI.dylib\"",
 				);
 				PRODUCT_NAME = Geonect;
-				USER_HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\" ../include \"$(CINDER_PATH)/blocks/opencv/include\" \"$(CINDER_PATH)/blocks/Cinder-Kinect/include\"";
+				USER_HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\" ../include \"$(CINDER_PATH)/blocks/BlockOpenNI/include\"";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -257,18 +266,19 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Geonect_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					"\"$(CINDER_PATH)/boost\"",
+					"\"$(CINDER_PATH)/blocks/BlockOpenNI/include/OpenNI\"",
+				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = (
 					"\"$(CINDER_PATH)/lib/libcinder.a\"",
-					"\"$(CINDER_PATH)/blocks/opencv/lib/macosx/libcv.a\"",
-					"\"$(CINDER_PATH)/blocks/opencv/lib/macosx/libcxcore.a\"",
-					"\"$(CINDER_PATH)/blocks/Cinder-Kinect/lib/macosx/libfreenect.a\"",
-					"\"$(CINDER_PATH)/blocks/Cinder-Kinect/lib/macosx/libusb-1.0.a\"",
+					"\"$(CINDER_PATH)/blocks/BlockOpenNI/lib/macosx/libOpenNI.dylib\"",
 				);
 				PRODUCT_NAME = Geonect;
 				STRIP_INSTALLED_PRODUCT = YES;
-				USER_HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\" ../include \"$(CINDER_PATH)/blocks/opencv/include\" \"$(CINDER_PATH)/blocks/Cinder-Kinect/include\"";
+				USER_HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\" ../include \"$(CINDER_PATH)/blocks/BlockOpenNI/include\"";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
