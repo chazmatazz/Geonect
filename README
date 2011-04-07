@@ -1,7 +1,7 @@
 Geonect
 -------
 
-3D modeling with Kinect. Uses nestk, which wraps OpenNI.
+3D modeling with Kinect. Uses nestk, which wraps OpenNI and QT.
 
 Installation on OS X
 --------------------
@@ -40,7 +40,6 @@ cd linux
 ccmake ../.. # Set up cmake to use OpenNI and Libfreenect and external OpenCV.
 make
 ./GeonectApp
-
 
 Credits
 -------
