@@ -23,16 +23,15 @@ make
 sudo make install
 
 In Geonect:
-mkdir build
-cd build
-mkdir macosx
-cd macosx
-ccmake ../.. # Set up cmake to use OpenNI and Libfreenect and external OpenCV.
-make
-./bin/GeonectApp
+./macosx_configure.sh
+./macosx_build.sh
+cd build/macosx/bin
+./GeonectApp
 
 Installation on Ubuntu
 ----------------------
+
+Note: these instructions are slightly out of date.
 
 Install OpenCV 2.2 following http://opencv.willowgarage.com/wiki/InstallGuide%20%3A%20Debian
 
