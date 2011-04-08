@@ -7,6 +7,7 @@ SET(LIBRARY_OUTPUT_PATH ${GeonectApp_BINARY_DIR}/lib)
 
 FIND_PACKAGE(Qt4 COMPONENTS QtCore QtGui QtOpenGL REQUIRED)
 FIND_PACKAGE(OpenGL REQUIRED)
+FIND_PACKAGE(OpenCV REQUIRED)
 
 SET(GeonectApp_SOURCES
 	GeonectApp.cpp
@@ -41,3 +42,9 @@ ADD_EXECUTABLE(GeonectApp ${GeonectApp_SOURCES} ${uic_sources})
 
 TARGET_LINK_LIBRARIES(GeonectApp nestk ${QT_LIBRARIES} ${OPENGL_LIBRARIES})
 
+# FIXME: on Mac, the dylib rpath points to current directory.
+if(APPLE)
+    add_custom_command(TARGET GeonectApp POST_BUILD
+        COMMAND cp ${LIBRARY_OUTPUT_PATH}/*.dylib ${EXECUTABLE_OUTPUT_PATH}/
+    )
+endif()
