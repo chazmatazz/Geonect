@@ -1,7 +1,7 @@
 Geonect
 -------
 
-3D modeling with Kinect. Uses nestk, which wraps OpenNI and QT.
+3D modeling with Kinect. Uses nestk for Cmake build files for OpenNI.
 
 Pulling Repository
 ------------------
@@ -15,18 +15,18 @@ Installation on OS X
 
 Install OpenCV 2.2: http://opencv.willowgarage.com/wiki/InstallGuide
 
-use 
+for OpenCV use:
 mkdir release
 cd release
 cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D BUILD_PYTHON_SUPPORT=OFF -D BUILD_EXAMPLES=ON .. 
 make
 sudo make install
 
-In Geonect:
+Then, in Geonect:
 ./macosx_configure.sh
 ./macosx_build.sh
 cd build/macosx/bin
-./GeonectApp
+./Geonect
 
 Installation on Ubuntu
 ----------------------
@@ -52,7 +52,7 @@ mkdir linux
 cd linux
 ccmake ../.. # Set up cmake to use OpenNI and Libfreenect and external OpenCV.
 make
-./bin/GeonectApp
+./bin/Geonect
 
 Credits
 -------
